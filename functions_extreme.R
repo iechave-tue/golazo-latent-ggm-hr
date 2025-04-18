@@ -160,3 +160,25 @@ generate_latent_model_cycle <- function(p, h) {
   G <- Theta2Gamma(Theta)
   return(list(Gamma = G, graph = Gamma2graph(G), Lst = NULL))
 }
+
+
+twocycles_lap = function(p){
+  p=p/2
+  aux = matrix(0,p,p)
+  aux[1,p] = aux[p,1] = -2
+  for (k in 1:(p-1)){
+    aux[k,k+1] = aux[k+1,k] = -2
+  }
+  K = matrix(0,2*p+1,2*p+1)
+  K[1:p,1:p] = aux
+  K[(p+1):(2*p),(p+1):(2*p)] = aux
+  for(i in 1:(2*p)){
+    if(i%%2==0) {K[i,2*p+1] = K[2*p+1,i] = -0.4}
+    else{ K[i,2*p+1] = K[2*p+1,i] = 0.2 }
+  }
+  for(i in 1:(2*p+1)){
+    aux = sum(K[i,])
+    K[i,i] = -aux
+  }
+  return(K)
+}
